@@ -1,0 +1,29 @@
+{
+  "name": "apex-browse",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Deterministic Playwright execution with bounded LLM repair.",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "playwright test",
+    "mcp": "npm.cmd run build && node dist/mcp-server.js",
+    "benchmark:setup": "npm.cmd run build && npx.cmd -y @playwright/mcp@0.0.79 install-browser chrome-for-testing",
+    "benchmark:check": "tsc -p tsconfig.benchmark.json",
+    "benchmark:run": "npm.cmd run build && tsx benchmark/runner.ts",
+    "benchmark:analyze": "tsx benchmark/analyze.ts",
+    "benchmark:sanitize": "tsx benchmark/sanitize.ts",
+    "benchmark:verify": "tsx benchmark/verify.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "playwright": "^1.57.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^24.0.0",
+    "tsx": "^4.23.11",
+    "typescript": "^5.8.0"
+  }
+}

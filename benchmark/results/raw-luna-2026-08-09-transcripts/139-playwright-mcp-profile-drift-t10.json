@@ -1,0 +1,527 @@
+[
+  {
+    "type": "thread.started",
+    "thread_id": "<REDACTED_THREAD_ID>"
+  },
+  {
+    "type": "turn.started"
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_0",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_navigate",
+      "arguments": {
+        "url": "http://benchmark.local/profile-drift"
+      },
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_0",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_navigate",
+      "arguments": {
+        "url": "http://benchmark.local/profile-drift"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "### Ran Playwright code\n```js\nawait page.goto('http://benchmark.local/profile-drift');\n```\n### Page\n- Page URL: http://benchmark.local/profile-drift\n- Page Title: Profile editor\n- Console: 1 errors, 0 warnings\n### Snapshot\n- [Snapshot](.playwright-mcp\\page-2026-08-09T15-07-17-128Z.yml)\n### Events\n- New console entries: .playwright-mcp\\console-2026-08-09T15-07-17-071Z.log#L1"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_1",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_snapshot",
+      "arguments": {},
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_1",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_snapshot",
+      "arguments": {},
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "### Page\n- Page URL: http://benchmark.local/profile-drift\n- Page Title: Profile editor\n- Console: 1 errors, 0 warnings\n### Snapshot\n```yaml\n- generic [active] [ref=e1]:\n  - banner [ref=e2]:\n    - navigation [ref=e3]:\n      - link \"Documentation\" [ref=e4] [cursor=pointer]:\n        - /url: \"#docs\"\n      - link \"Support\" [ref=e5] [cursor=pointer]:\n        - /url: \"#support\"\n      - link \"Account\" [ref=e6] [cursor=pointer]:\n        - /url: \"#account\"\n  - main [ref=e7]:\n    - heading \"Profile editor\" [level=1] [ref=e8]\n    - paragraph [ref=e9]: Controlled benchmark application. All submitted values are checked by an independent server-side oracle.\n    - generic [ref=e10]:\n      - generic [ref=e11]:\n        - generic [ref=e13]:\n          - text: First name\n          - textbox \"First name\" [ref=e15]\n        - group \"Identity\" [ref=e16]:\n          - generic [ref=e18]:\n            - text: Last name\n            - textbox \"Last name\" [ref=e19]\n          - generic [ref=e20]:\n            - text: Email\n            - textbox \"Email\" [ref=e21]\n        - generic [ref=e23]:\n          - text: Role\n          - combobox \"Role\" [ref=e24]:\n            - option \"Viewer\" [selected]\n            - option \"Administrator\"\n        - paragraph [ref=e25]:\n          - generic [ref=e26]:\n            - checkbox \"Terms and conditions\" [ref=e27]\n            - text: Terms and conditions\n        - button \"Save profile\" [ref=e29]\n      - status\n```"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_2",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_fill_form",
+      "arguments": {
+        "fields": [
+          {
+            "name": "First name",
+            "target": "e15",
+            "type": "textbox",
+            "value": "Ada"
+          },
+          {
+            "name": "Last name",
+            "target": "e19",
+            "type": "textbox",
+            "value": "Lovelace"
+          },
+          {
+            "name": "Email",
+            "target": "e21",
+            "type": "textbox",
+            "value": "ada@example.test"
+          },
+          {
+            "name": "Role",
+            "target": "e24",
+            "type": "combobox",
+            "value": "Administrator"
+          },
+          {
+            "name": "Terms and conditions",
+            "target": "e27",
+            "type": "checkbox",
+            "value": true
+          }
+        ]
+      },
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_2",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_fill_form",
+      "arguments": {
+        "fields": [
+          {
+            "name": "First name",
+            "target": "e15",
+            "type": "textbox",
+            "value": "Ada"
+          },
+          {
+            "name": "Last name",
+            "target": "e19",
+            "type": "textbox",
+            "value": "Lovelace"
+          },
+          {
+            "name": "Email",
+            "target": "e21",
+            "type": "textbox",
+            "value": "ada@example.test"
+          },
+          {
+            "name": "Role",
+            "target": "e24",
+            "type": "combobox",
+            "value": "Administrator"
+          },
+          {
+            "name": "Terms and conditions",
+            "target": "e27",
+            "type": "checkbox",
+            "value": true
+          }
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "### Error\nInvalid arguments for tool \"browser_fill_form\":\n✖ Invalid input: expected string, received boolean\n  → at fields[4].value"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "failed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_3",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_click",
+      "arguments": {
+        "target": "e29",
+        "element": "Save profile"
+      },
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_3",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_click",
+      "arguments": {
+        "target": "e29",
+        "element": "Save profile"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "### Ran Playwright code\n```js\nawait page.getByRole('button', { name: 'Save profile' }).click();\n```\n### Page\n- Page URL: http://benchmark.local/profile-drift\n- Page Title: Profile editor\n- Console: 1 errors, 0 warnings\n### Snapshot\n- [Snapshot](.playwright-mcp\\page-2026-08-09T15-07-34-105Z.yml)"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_4",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_wait_for",
+      "arguments": {
+        "text": "Profile saved",
+        "time": 2
+      },
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_4",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_wait_for",
+      "arguments": {
+        "text": "Profile saved",
+        "time": 2
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "### Result\nWaited for Profile saved\n### Ran Playwright code\n```js\nawait new Promise(f => setTimeout(f, 2 * 1000));\nawait page.getByText(\"Profile saved\").first().waitFor({ state: 'visible' });\n```\n### Page\n- Page URL: http://benchmark.local/profile-drift\n- Page Title: Profile editor\n- Console: 1 errors, 0 warnings\n### Snapshot\n- [Snapshot](.playwright-mcp\\page-2026-08-09T15-07-36-131Z.yml)"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_5",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_snapshot",
+      "arguments": {},
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_5",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_snapshot",
+      "arguments": {},
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "### Page\n- Page URL: http://benchmark.local/profile-drift\n- Page Title: Profile editor\n- Console: 1 errors, 0 warnings\n### Snapshot\n```yaml\n- generic [ref=e1]:\n  - banner [ref=e2]:\n    - navigation [ref=e3]:\n      - link \"Documentation\" [ref=e4] [cursor=pointer]:\n        - /url: \"#docs\"\n      - link \"Support\" [ref=e5] [cursor=pointer]:\n        - /url: \"#support\"\n      - link \"Account\" [ref=e6] [cursor=pointer]:\n        - /url: \"#account\"\n  - main [ref=e7]:\n    - heading \"Profile editor\" [level=1] [ref=e8]\n    - paragraph [ref=e9]: Controlled benchmark application. All submitted values are checked by an independent server-side oracle.\n    - generic [ref=e10]:\n      - generic [ref=e11]:\n        - generic [ref=e13]:\n          - text: First name\n          - textbox \"First name\" [ref=e15]\n        - group \"Identity\" [ref=e16]:\n          - generic [ref=e18]:\n            - text: Last name\n            - textbox \"Last name\" [ref=e19]\n          - generic [ref=e20]:\n            - text: Email\n            - textbox \"Email\" [ref=e21]\n        - generic [ref=e23]:\n          - text: Role\n          - combobox \"Role\" [ref=e24]:\n            - option \"Viewer\" [selected]\n            - option \"Administrator\"\n        - paragraph [ref=e25]:\n          - generic [ref=e26]:\n            - checkbox \"Terms and conditions\" [ref=e27]\n            - text: Terms and conditions\n        - button \"Save profile\" [active] [ref=e29]\n      - status [ref=e30]: Profile saved\n```"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_6",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_fill_form",
+      "arguments": {
+        "fields": [
+          {
+            "name": "First name",
+            "target": "e15",
+            "type": "textbox",
+            "value": "Ada"
+          },
+          {
+            "name": "Last name",
+            "target": "e19",
+            "type": "textbox",
+            "value": "Lovelace"
+          },
+          {
+            "name": "Email",
+            "target": "e21",
+            "type": "textbox",
+            "value": "ada@example.test"
+          },
+          {
+            "name": "Role",
+            "target": "e24",
+            "type": "combobox",
+            "value": "Administrator"
+          },
+          {
+            "name": "Terms and conditions",
+            "target": "e27",
+            "type": "checkbox",
+            "value": "true"
+          }
+        ]
+      },
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_6",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_fill_form",
+      "arguments": {
+        "fields": [
+          {
+            "name": "First name",
+            "target": "e15",
+            "type": "textbox",
+            "value": "Ada"
+          },
+          {
+            "name": "Last name",
+            "target": "e19",
+            "type": "textbox",
+            "value": "Lovelace"
+          },
+          {
+            "name": "Email",
+            "target": "e21",
+            "type": "textbox",
+            "value": "ada@example.test"
+          },
+          {
+            "name": "Role",
+            "target": "e24",
+            "type": "combobox",
+            "value": "Administrator"
+          },
+          {
+            "name": "Terms and conditions",
+            "target": "e27",
+            "type": "checkbox",
+            "value": "true"
+          }
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "### Ran Playwright code\n```js\nawait page.getByRole('textbox', { name: 'First name' }).fill('Ada');\nawait page.getByRole('textbox', { name: 'Last name' }).fill('Lovelace');\nawait page.getByRole('textbox', { name: 'Email' }).fill('ada@example.test');\nawait page.getByLabel('Role ViewerAdministrator').selectOption('Administrator');\nawait page.getByRole('checkbox', { name: 'Terms and conditions' }).check();\n```"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_7",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_click",
+      "arguments": {
+        "target": "e29",
+        "element": "Save profile"
+      },
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_7",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_click",
+      "arguments": {
+        "target": "e29",
+        "element": "Save profile"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "### Ran Playwright code\n```js\nawait page.getByRole('button', { name: 'Save profile' }).click();\n```\n### Page\n- Page URL: http://benchmark.local/profile-drift\n- Page Title: Profile editor\n- Console: 1 errors, 0 warnings\n### Snapshot\n- [Snapshot](.playwright-mcp\\page-2026-08-09T15-07-49-108Z.yml)"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_8",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_wait_for",
+      "arguments": {
+        "text": "Profile saved",
+        "time": 2
+      },
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_8",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_wait_for",
+      "arguments": {
+        "text": "Profile saved",
+        "time": 2
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "### Result\nWaited for Profile saved\n### Ran Playwright code\n```js\nawait new Promise(f => setTimeout(f, 2 * 1000));\nawait page.getByText(\"Profile saved\").first().waitFor({ state: 'visible' });\n```\n### Page\n- Page URL: http://benchmark.local/profile-drift\n- Page Title: Profile editor\n- Console: 1 errors, 0 warnings\n### Snapshot\n- [Snapshot](.playwright-mcp\\page-2026-08-09T15-07-51-135Z.yml)"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_9",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_snapshot",
+      "arguments": {},
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_9",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_snapshot",
+      "arguments": {},
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "### Page\n- Page URL: http://benchmark.local/profile-drift\n- Page Title: Profile editor\n- Console: 1 errors, 0 warnings\n### Snapshot\n```yaml\n- generic [ref=e1]:\n  - banner [ref=e2]:\n    - navigation [ref=e3]:\n      - link \"Documentation\" [ref=e4] [cursor=pointer]:\n        - /url: \"#docs\"\n      - link \"Support\" [ref=e5] [cursor=pointer]:\n        - /url: \"#support\"\n      - link \"Account\" [ref=e6] [cursor=pointer]:\n        - /url: \"#account\"\n  - main [ref=e7]:\n    - heading \"Profile editor\" [level=1] [ref=e8]\n    - paragraph [ref=e9]: Controlled benchmark application. All submitted values are checked by an independent server-side oracle.\n    - generic [ref=e10]:\n      - generic [ref=e11]:\n        - generic [ref=e13]:\n          - text: First name\n          - textbox \"First name\" [ref=e15]: Ada\n        - group \"Identity\" [ref=e16]:\n          - generic [ref=e18]:\n            - text: Last name\n            - textbox \"Last name\" [ref=e19]: Lovelace\n          - generic [ref=e20]:\n            - text: Email\n            - textbox \"Email\" [ref=e21]: ada@example.test\n        - generic [ref=e23]:\n          - text: Role\n          - combobox \"Role\" [ref=e24]:\n            - option \"Viewer\"\n            - option \"Administrator\" [selected]\n        - paragraph [ref=e25]:\n          - generic [ref=e26]:\n            - checkbox \"Terms and conditions\" [checked] [ref=e27]\n            - text: Terms and conditions\n        - button \"Save profile\" [active] [ref=e29]\n      - status [ref=e30]: Profile saved\n```"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_10",
+      "type": "agent_message",
+      "text": "DONE"
+    }
+  },
+  {
+    "type": "turn.completed",
+    "usage": {
+      "input_tokens": 107940,
+      "cached_input_tokens": 95744,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 756,
+      "reasoning_output_tokens": 200
+    }
+  }
+]

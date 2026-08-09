@@ -1,0 +1,34 @@
+node_modules/
+dist/
+test-results/
+playwright-report/
+blob-report/
+coverage/
+.playwright-mcp/
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+*.local
+.npmrc
+.auth/
+playwright/.auth/
+*storage-state*.json
+
+# Local logs, caches, and editor/OS state
+*.log
+*.tmp
+.cache/
+.codex/
+.agents/
+.idea/
+.vscode/
+.eslintcache
+*.tsbuildinfo
+.DS_Store
+Thumbs.db
+
+# Diagnostic benchmark runs are retained locally, but final results stay tracked.
+benchmark/pilots/
+benchmark/results/*.partial

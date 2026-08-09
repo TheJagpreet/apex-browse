@@ -1,0 +1,301 @@
+[
+  {
+    "type": "thread.started",
+    "thread_id": "<REDACTED_THREAD_ID>"
+  },
+  {
+    "type": "turn.started"
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_0",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_navigate",
+      "arguments": {
+        "url": "http://benchmark.local/renamed-control"
+      },
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_0",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_navigate",
+      "arguments": {
+        "url": "http://benchmark.local/renamed-control"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "### Ran Playwright code\n```js\nawait page.goto('http://benchmark.local/renamed-control');\n```\n### Page\n- Page URL: http://benchmark.local/renamed-control\n- Page Title: Message composer\n- Console: 1 errors, 0 warnings\n### Snapshot\n- [Snapshot](.playwright-mcp\\page-2026-08-09T15-03-17-685Z.yml)\n### Events\n- New console entries: .playwright-mcp\\console-2026-08-09T15-03-17-629Z.log#L1"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_1",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_snapshot",
+      "arguments": {},
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_1",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_snapshot",
+      "arguments": {},
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "### Page\n- Page URL: http://benchmark.local/renamed-control\n- Page Title: Message composer\n- Console: 1 errors, 0 warnings\n### Snapshot\n```yaml\n- generic [active] [ref=e1]:\n  - banner [ref=e2]:\n    - navigation [ref=e3]:\n      - link \"Documentation\" [ref=e4] [cursor=pointer]:\n        - /url: \"#docs\"\n      - link \"Support\" [ref=e5] [cursor=pointer]:\n        - /url: \"#support\"\n      - link \"Account\" [ref=e6] [cursor=pointer]:\n        - /url: \"#account\"\n  - main [ref=e7]:\n    - heading \"Message composer\" [level=1] [ref=e8]\n    - paragraph [ref=e9]: Controlled benchmark application. All submitted values are checked by an independent server-side oracle.\n    - generic [ref=e10]:\n      - generic [ref=e11]:\n        - text: Message\n        - textbox \"Message\" [ref=e12]\n      - button \"Sent\" [ref=e13]\n    - status\n```"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_2",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_fill_form",
+      "arguments": {
+        "fields": [
+          {
+            "name": "Message",
+            "ref": "e12",
+            "type": "textbox",
+            "value": "Hello"
+          }
+        ]
+      },
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_2",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_fill_form",
+      "arguments": {
+        "fields": [
+          {
+            "name": "Message",
+            "ref": "e12",
+            "type": "textbox",
+            "value": "Hello"
+          }
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "### Error\nInvalid arguments for tool \"browser_fill_form\":\n✖ Invalid input: expected string, received undefined\n  → at fields[0].target"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "failed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_3",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_type",
+      "arguments": {
+        "target": "e12",
+        "text": "Hello"
+      },
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_3",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_type",
+      "arguments": {
+        "target": "e12",
+        "text": "Hello"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "### Ran Playwright code\n```js\nawait page.getByRole('textbox', { name: 'Message' }).fill('Hello');\n```"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_4",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_click",
+      "arguments": {
+        "ref": "e13"
+      },
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_4",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_click",
+      "arguments": {
+        "ref": "e13"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "### Error\nInvalid arguments for tool \"browser_click\":\n✖ Invalid input: expected string, received undefined\n  → at target"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "failed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_5",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_click",
+      "arguments": {
+        "target": "e13"
+      },
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_5",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_click",
+      "arguments": {
+        "target": "e13"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "### Ran Playwright code\n```js\nawait page.getByRole('button', { name: 'Sent' }).click();\n```\n### Page\n- Page URL: http://benchmark.local/renamed-control\n- Page Title: Message composer\n- Console: 1 errors, 0 warnings\n### Snapshot\n- [Snapshot](.playwright-mcp\\page-2026-08-09T15-03-43-916Z.yml)"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_6",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_snapshot",
+      "arguments": {},
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_6",
+      "type": "mcp_tool_call",
+      "server": "playwright",
+      "tool": "browser_snapshot",
+      "arguments": {},
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "### Page\n- Page URL: http://benchmark.local/renamed-control\n- Page Title: Message composer\n- Console: 1 errors, 0 warnings\n### Snapshot\n```yaml\n- generic [ref=e1]:\n  - banner [ref=e2]:\n    - navigation [ref=e3]:\n      - link \"Documentation\" [ref=e4] [cursor=pointer]:\n        - /url: \"#docs\"\n      - link \"Support\" [ref=e5] [cursor=pointer]:\n        - /url: \"#support\"\n      - link \"Account\" [ref=e6] [cursor=pointer]:\n        - /url: \"#account\"\n  - main [ref=e7]:\n    - heading \"Message composer\" [level=1] [ref=e8]\n    - paragraph [ref=e9]: Controlled benchmark application. All submitted values are checked by an independent server-side oracle.\n    - generic [ref=e10]:\n      - generic [ref=e11]:\n        - text: Message\n        - textbox \"Message\" [ref=e12]: Hello\n      - button \"Sent\" [active] [ref=e13]\n    - status [ref=e14]: Message sent\n```"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_7",
+      "type": "agent_message",
+      "text": "DONE"
+    }
+  },
+  {
+    "type": "turn.completed",
+    "usage": {
+      "input_tokens": 223085,
+      "cached_input_tokens": 203264,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 451,
+      "reasoning_output_tokens": 97
+    }
+  }
+]
