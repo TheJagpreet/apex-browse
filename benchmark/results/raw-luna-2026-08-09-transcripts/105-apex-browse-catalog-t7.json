@@ -1,0 +1,243 @@
+[
+  {
+    "type": "thread.started",
+    "thread_id": "<REDACTED_THREAD_ID>"
+  },
+  {
+    "type": "turn.started"
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_0",
+      "type": "mcp_tool_call",
+      "server": "apex-browse",
+      "tool": "apex_browse_run",
+      "arguments": {
+        "programJson": "{\"steps\":[{\"op\":\"navigate\",\"url\":\"http://benchmark.local/catalog\"}]}"
+      },
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_0",
+      "type": "mcp_tool_call",
+      "server": "apex-browse",
+      "tool": "apex_browse_run",
+      "arguments": {
+        "programJson": "{\"steps\":[{\"op\":\"navigate\",\"url\":\"http://benchmark.local/catalog\"}]}"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"status\":\"success\",\"metrics\":{\"durationMs\":109.71520000000055,\"localActions\":1,\"repairs\":0},\"evidenceIds\":[\"memory://evidence/1/0\"]}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_1",
+      "type": "mcp_tool_call",
+      "server": "apex-browse",
+      "tool": "apex_browse_snapshot",
+      "arguments": {},
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_1",
+      "type": "mcp_tool_call",
+      "server": "apex-browse",
+      "tool": "apex_browse_snapshot",
+      "arguments": {},
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"revision\":1,\"url\":\"http://benchmark.local/catalog\",\"title\":\"Product catalog\",\"controls\":[{\"id\":\"c1_0\",\"role\":\"link\",\"name\":\"Documentation\",\"disabled\":false},{\"id\":\"c1_1\",\"role\":\"link\",\"name\":\"Support\",\"disabled\":false},{\"id\":\"c1_2\",\"role\":\"link\",\"name\":\"Account\",\"disabled\":false},{\"id\":\"c1_3\",\"role\":\"searchbox\",\"name\":\"Search catalog\",\"disabled\":false},{\"id\":\"c1_4\",\"role\":\"button\",\"name\":\"Search\",\"disabled\":false}],\"visibleText\":\"DocumentationSupportAccount Product catalog Controlled benchmark application. All submitted values are checked by an independent server-side oracle. Search catalog Search\",\"omitted\":{\"controls\":0,\"textCharacters\":0},\"untrusted\":true}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_2",
+      "type": "mcp_tool_call",
+      "server": "apex-browse",
+      "tool": "apex_browse_run",
+      "arguments": {
+        "programJson": "{\"steps\":[{\"op\":\"fill\",\"target\":{\"role\":\"searchbox\",\"name\":\"Search catalog\"},\"value\":\"Samsung S25 Ultra\",\"submit\":true}]}"
+      },
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_2",
+      "type": "mcp_tool_call",
+      "server": "apex-browse",
+      "tool": "apex_browse_run",
+      "arguments": {
+        "programJson": "{\"steps\":[{\"op\":\"fill\",\"target\":{\"role\":\"searchbox\",\"name\":\"Search catalog\"},\"value\":\"Samsung S25 Ultra\",\"submit\":true}]}"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"status\":\"success\",\"metrics\":{\"durationMs\":14.46559999999954,\"localActions\":1,\"repairs\":0},\"evidenceIds\":[\"memory://evidence/2/0\"]}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_3",
+      "type": "mcp_tool_call",
+      "server": "apex-browse",
+      "tool": "apex_browse_snapshot",
+      "arguments": {},
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_3",
+      "type": "mcp_tool_call",
+      "server": "apex-browse",
+      "tool": "apex_browse_snapshot",
+      "arguments": {},
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"revision\":2,\"url\":\"http://benchmark.local/catalog\",\"title\":\"Product catalog\",\"controls\":[{\"id\":\"c2_0\",\"role\":\"link\",\"name\":\"Documentation\",\"disabled\":false},{\"id\":\"c2_1\",\"role\":\"link\",\"name\":\"Support\",\"disabled\":false},{\"id\":\"c2_2\",\"role\":\"link\",\"name\":\"Account\",\"disabled\":false},{\"id\":\"c2_3\",\"role\":\"searchbox\",\"name\":\"Search catalog\",\"disabled\":false},{\"id\":\"c2_4\",\"role\":\"button\",\"name\":\"Search\",\"disabled\":false},{\"id\":\"c2_5\",\"role\":\"link\",\"name\":\"Galaxy S25 Ultra\",\"disabled\":false},{\"id\":\"c2_6\",\"role\":\"link\",\"name\":\"Galaxy S25 Ultra Case\",\"disabled\":false}],\"visibleText\":\"DocumentationSupportAccount Product catalog Controlled benchmark application. All submitted values are checked by an independent server-side oracle. Search catalog Search Results Galaxy S25 Ultra Galaxy S25 Ultra Case\",\"omitted\":{\"controls\":0,\"textCharacters\":0},\"untrusted\":true}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_4",
+      "type": "mcp_tool_call",
+      "server": "apex-browse",
+      "tool": "apex_browse_run",
+      "arguments": {
+        "programJson": "{\"steps\":[{\"op\":\"click\",\"target\":{\"role\":\"link\",\"name\":\"Galaxy S25 Ultra\"}}]}"
+      },
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_4",
+      "type": "mcp_tool_call",
+      "server": "apex-browse",
+      "tool": "apex_browse_run",
+      "arguments": {
+        "programJson": "{\"steps\":[{\"op\":\"click\",\"target\":{\"role\":\"link\",\"name\":\"Galaxy S25 Ultra\"}}]}"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"status\":\"success\",\"metrics\":{\"durationMs\":30.361899999999878,\"localActions\":1,\"repairs\":0},\"evidenceIds\":[\"memory://evidence/3/0\"]}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.started",
+    "item": {
+      "id": "item_5",
+      "type": "mcp_tool_call",
+      "server": "apex-browse",
+      "tool": "apex_browse_snapshot",
+      "arguments": {},
+      "result": null,
+      "error": null,
+      "status": "in_progress"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_5",
+      "type": "mcp_tool_call",
+      "server": "apex-browse",
+      "tool": "apex_browse_snapshot",
+      "arguments": {},
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"revision\":3,\"url\":\"http://benchmark.local/catalog\",\"title\":\"Product catalog\",\"controls\":[{\"id\":\"c3_0\",\"role\":\"link\",\"name\":\"Documentation\",\"disabled\":false},{\"id\":\"c3_1\",\"role\":\"link\",\"name\":\"Support\",\"disabled\":false},{\"id\":\"c3_2\",\"role\":\"link\",\"name\":\"Account\",\"disabled\":false},{\"id\":\"c3_3\",\"role\":\"searchbox\",\"name\":\"Search catalog\",\"disabled\":false},{\"id\":\"c3_4\",\"role\":\"button\",\"name\":\"Search\",\"disabled\":false},{\"id\":\"c3_5\",\"role\":\"link\",\"name\":\"Galaxy S25 Ultra\",\"disabled\":false},{\"id\":\"c3_6\",\"role\":\"link\",\"name\":\"Galaxy S25 Ultra Case\",\"disabled\":false}],\"visibleText\":\"DocumentationSupportAccount Product catalog Controlled benchmark application. All submitted values are checked by an independent server-side oracle. Search catalog Search Results Galaxy S25 Ultra Galaxy S25 Ultra Case Product details Galaxy S25 Ultra\",\"omitted\":{\"controls\":0,\"textCharacters\":0},\"untrusted\":true}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  },
+  {
+    "type": "item.completed",
+    "item": {
+      "id": "item_6",
+      "type": "agent_message",
+      "text": "DONE"
+    }
+  },
+  {
+    "type": "turn.completed",
+    "usage": {
+      "input_tokens": 171042,
+      "cached_input_tokens": 154624,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 429,
+      "reasoning_output_tokens": 101
+    }
+  }
+]

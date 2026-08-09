@@ -7,14 +7,14 @@ import { chromium, type Page } from 'playwright';
 import { startBenchmarkServer } from './app.js';
 import { workloads, workloadById, type Workload, type WorkloadId } from './workloads.js';
 
-type Arm = 'apex' | 'playwright-mcp' | 'native';
+type Arm = 'apex-browse' | 'playwright-mcp' | 'native';
 type Usage = { input_tokens: number; cached_input_tokens: number; cache_write_input_tokens: number; output_tokens: number; reasoning_output_tokens: number };
 type Trial = {
   schemaVersion: 1; runId: string; sequence: number; trial: number; workload: WorkloadId; arm: Arm; orderPosition: number;
   startedAt: string; durationMs: number; success: boolean; oracleMatched: boolean; timedOut: boolean; exitCode: number | null;
   expected: Record<string, unknown>; observed: Record<string, unknown> | null; toolCalls: number; toolNames: string[];
   toolErrors: number; mcpResultBytes: number; agentFinal: string | null; usage: Usage; usageAvailable: boolean;
-  apexReportedDurationMs: number | null; apexReportedLocalActions: number | null; apexReportedRepairs: number | null; error: string | null;
+  apexBrowseReportedDurationMs: number | null; apexBrowseReportedLocalActions: number | null; apexBrowseReportedRepairs: number | null; error: string | null;
 };
 
 const OFFICIAL_MCP_VERSION = '0.0.79';
@@ -46,12 +46,12 @@ function option(name: string, fallback: string): string {
 }
 
 const trialCount = Number(option('--trials', '10'));
-const requestedArms = option('--arms', 'apex,playwright-mcp,native').split(',') as Arm[];
+const requestedArms = option('--arms', 'apex-browse,playwright-mcp,native').split(',') as Arm[];
 const requestedWorkloads = option('--workloads', workloads.map(item => item.id).join(',')).split(',').map(workloadById);
 const timeoutMs = Number(option('--timeout-ms', '120000'));
 const outputPath = resolve(option('--output', join('benchmark', 'results', `raw-${new Date().toISOString().replaceAll(':', '-')}.jsonl`)));
 const resume = process.argv.includes('--resume');
-const validArms: Arm[] = ['apex', 'playwright-mcp', 'native'];
+const validArms: Arm[] = ['apex-browse', 'playwright-mcp', 'native'];
 if (!Number.isInteger(trialCount) || trialCount < 1) throw new Error('--trials must be a positive integer');
 if (requestedArms.some(arm => !validArms.includes(arm))) throw new Error(`--arms must use ${validArms.join(',')}`);
 
@@ -96,9 +96,9 @@ async function runNative(page: Page, workload: Workload, url: string): Promise<v
 }
 
 function mcpOverrides(arm: Exclude<Arm, 'native'>): string[] {
-  if (arm === 'apex') {
+  if (arm === 'apex-browse') {
     const server = resolve('dist', 'mcp-server.js').replaceAll('\\', '\\\\');
-    return ['-c', `mcp_servers.apex.command="${process.execPath.replaceAll('\\', '\\\\')}"`, '-c', `mcp_servers.apex.args=["${server}"]`];
+    return ['-c', `mcp_servers.apex-browse.command="${process.execPath.replaceAll('\\', '\\\\')}"`, '-c', `mcp_servers.apex-browse.args=["${server}"]`];
   }
   return [
     '-c', 'mcp_servers.playwright.command="npx.cmd"',
@@ -108,8 +108,8 @@ function mcpOverrides(arm: Exclude<Arm, 'native'>): string[] {
 
 async function runCodex(arm: Exclude<Arm, 'native'>, prompt: string): Promise<{
   exitCode: number | null; timedOut: boolean; usage: Usage; toolNames: string[]; toolErrors: number;
-  mcpResultBytes: number; agentFinal: string | null; usageAvailable: boolean; apexReportedDurationMs: number | null;
-  apexReportedLocalActions: number | null; apexReportedRepairs: number | null; error: string | null; transcript: unknown[];
+  mcpResultBytes: number; agentFinal: string | null; usageAvailable: boolean; apexBrowseReportedDurationMs: number | null;
+  apexBrowseReportedLocalActions: number | null; apexBrowseReportedRepairs: number | null; error: string | null; transcript: unknown[];
 }> {
   const args = ['exec', '--json', '--ephemeral', '--skip-git-repo-check', '--approve-for-me', '--ignore-user-config',
     '-m', MODEL, '-c', `model_reasoning_effort="${REASONING_EFFORT}"`, ...mcpOverrides(arm), prompt];
@@ -130,7 +130,7 @@ async function runCodex(arm: Exclude<Arm, 'native'>, prompt: string): Promise<{
     try { transcript.push(JSON.parse(line)); } catch { transcript.push({ type: 'unparsed_stdout', text: line }); }
   }
   const usage = emptyUsage(); let usageAvailable = false; const toolNames: string[] = []; let toolErrors = 0; let mcpResultBytes = 0; let agentFinal: string | null = null;
-  let apexReportedDurationMs: number | null = null; let apexReportedLocalActions: number | null = null; let apexReportedRepairs: number | null = null;
+  let apexBrowseReportedDurationMs: number | null = null; let apexBrowseReportedLocalActions: number | null = null; let apexBrowseReportedRepairs: number | null = null;
   for (const event of transcript as Array<Record<string, any>>) {
     if (event.type === 'turn.completed' && event.usage) {
       usageAvailable = true;
@@ -141,15 +141,15 @@ async function runCodex(arm: Exclude<Arm, 'native'>, prompt: string): Promise<{
       toolNames.push(`${item.server ?? 'mcp'}.${item.tool ?? item.name ?? 'unknown'}`);
       if (item.error || item.status === 'failed') toolErrors++;
       if (item.result !== undefined) mcpResultBytes += Buffer.byteLength(JSON.stringify(item.result));
-      if (item.server === 'apex' && item.result?.content) {
+      if (item.server === 'apex-browse' && item.result?.content) {
         for (const content of item.result.content) {
           if (content.type !== 'text') continue;
           try {
             const payload = JSON.parse(content.text);
             if (payload.metrics) {
-              apexReportedDurationMs = Math.max(apexReportedDurationMs ?? 0, Number(payload.metrics.durationMs ?? 0));
-              apexReportedLocalActions = Math.max(apexReportedLocalActions ?? 0, Number(payload.metrics.localActions ?? 0));
-              apexReportedRepairs = Math.max(apexReportedRepairs ?? 0, Number(payload.metrics.repairs ?? 0));
+              apexBrowseReportedDurationMs = Math.max(apexBrowseReportedDurationMs ?? 0, Number(payload.metrics.durationMs ?? 0));
+              apexBrowseReportedLocalActions = Math.max(apexBrowseReportedLocalActions ?? 0, Number(payload.metrics.localActions ?? 0));
+              apexBrowseReportedRepairs = Math.max(apexBrowseReportedRepairs ?? 0, Number(payload.metrics.repairs ?? 0));
             }
           } catch { /* A validation error is not a JSON receipt. */ }
         }
@@ -159,11 +159,11 @@ async function runCodex(arm: Exclude<Arm, 'native'>, prompt: string): Promise<{
   }
   const error = timedOut ? `Timed out after ${timeoutMs}ms` : exitCode === 0 ? null : stderr.trim().slice(0, 4000) || `Codex exited ${exitCode}`;
   return { exitCode, timedOut, usage, usageAvailable, toolNames, toolErrors, mcpResultBytes, agentFinal,
-    apexReportedDurationMs, apexReportedLocalActions, apexReportedRepairs, error, transcript };
+    apexBrowseReportedDurationMs, apexBrowseReportedLocalActions, apexBrowseReportedRepairs, error, transcript };
 }
 
 function rotatedOrder(index: number): Arm[] {
-  const base: Arm[] = ['apex', 'playwright-mcp', 'native'];
+  const base: Arm[] = ['apex-browse', 'playwright-mcp', 'native'];
   const rotation = index % base.length;
   return [...base.slice(rotation), ...base.slice(0, rotation)].filter(arm => requestedArms.includes(arm));
 }
@@ -176,11 +176,11 @@ const createdRunId = new Date().toISOString();
 const newMetadata = {
   schemaVersion: 1, type: 'metadata', runId: createdRunId, createdAt: createdRunId, model: MODEL, reasoningEffort: REASONING_EFFORT,
   officialPlaywrightMcpVersion: OFFICIAL_MCP_VERSION, playwrightVersion: require('playwright/package.json').version,
-  apexVersion: '0.1.0', codexCliVersion: spawnSync('codex.exe', ['--version'], { encoding: 'utf8' }).stdout.trim(), trialCount,
+  apexBrowseVersion: '0.1.0', codexCliVersion: spawnSync('codex.exe', ['--version'], { encoding: 'utf8' }).stdout.trim(), trialCount,
   arms: requestedArms, workloads: requestedWorkloads.map(item => item.id), timeoutMs,
   counterbalancing: 'cyclic Latin order across workload-trial pairs', cachePolicy: 'fresh isolated browser/MCP/Codex process per trial; npm package cache warm',
   agentPromptTemplate: taskPrompt(requestedWorkloads[0], '{{url}}').replace(requestedWorkloads[0].task.replace('{{url}}', '{{url}}'), '{{task}}'),
-  apexMcpCommand: 'node dist/mcp-server.js',
+  apexBrowseMcpCommand: 'node dist/mcp-server.js',
   officialMcpCommand: `npx.cmd -y @playwright/mcp@${OFFICIAL_MCP_VERSION} --headless --isolated --image-responses omit --browser chromium`,
   runtime: { node: process.version }, machineDetailsRedacted: true,
 };
@@ -218,14 +218,14 @@ try {
         const url = `${app.baseUrl}${workload.path}`; const startedAt = new Date().toISOString(); const started = performance.now();
         let exitCode: number | null = 0; let timedOut = false; let usage = emptyUsage(); let toolNames: string[] = [];
         let toolErrors = 0; let mcpResultBytes = 0; let agentFinal: string | null = null; let error: string | null = null; let usageAvailable = arm === 'native';
-        let apexReportedDurationMs: number | null = null; let apexReportedLocalActions: number | null = null; let apexReportedRepairs: number | null = null;
+        let apexBrowseReportedDurationMs: number | null = null; let apexBrowseReportedLocalActions: number | null = null; let apexBrowseReportedRepairs: number | null = null;
         try {
           if (arm === 'native') {
             const browser = await chromium.launch({ headless: true });
             try { await runNative(await browser.newPage(), workload, url); } finally { await browser.close(); }
           } else {
             const result = await runCodex(arm, taskPrompt(workload, url));
-            ({ exitCode, timedOut, usage, usageAvailable, toolNames, toolErrors, mcpResultBytes, agentFinal, apexReportedDurationMs, apexReportedLocalActions, apexReportedRepairs, error } = result);
+            ({ exitCode, timedOut, usage, usageAvailable, toolNames, toolErrors, mcpResultBytes, agentFinal, apexBrowseReportedDurationMs, apexBrowseReportedLocalActions, apexBrowseReportedRepairs, error } = result);
             await writeFile(join(transcriptDir, `${String(sequence).padStart(3, '0')}-${arm}-${workload.id}-t${trial}.json`), JSON.stringify(redactValue(result.transcript), null, 2));
           }
         } catch (cause) { exitCode = null; error = cause instanceof Error ? cause.stack ?? cause.message : String(cause); }
@@ -234,7 +234,7 @@ try {
         const record: Trial = { schemaVersion: 1, runId, sequence, trial, workload: workload.id, arm, orderPosition,
           startedAt, durationMs, success: oracleMatched && !timedOut && exitCode === 0, oracleMatched, timedOut, exitCode,
           expected: workload.expected, observed, toolCalls: toolNames.length, toolNames, toolErrors, mcpResultBytes, agentFinal, usage, usageAvailable,
-          apexReportedDurationMs, apexReportedLocalActions, apexReportedRepairs, error: error ? redactString(error) : null };
+          apexBrowseReportedDurationMs, apexBrowseReportedLocalActions, apexBrowseReportedRepairs, error: error ? redactString(error) : null };
         await appendFile(outputPath, `${JSON.stringify(record)}\n`);
         process.stdout.write(`[${sequence}] t${trial} ${workload.id} ${arm}: ${record.success ? 'PASS' : 'FAIL'} ${Math.round(durationMs)}ms tools=${toolNames.length} tokens=${usage.input_tokens + usage.output_tokens}\n`);
       }

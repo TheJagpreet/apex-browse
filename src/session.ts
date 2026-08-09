@@ -10,7 +10,7 @@ const HIGH_IMPACT = /\b(delete|remove|pay|payment|purchase|place order|security|
 type Resolved = { locator: Locator; control: Control; via: 'exact' | 'normalized' } | { kind: 'missing' | 'ambiguous'; candidates: Control[] };
 type Paused = { program: Program; step: number; receipts: StepReceipt[]; metrics: RunMetrics; repair: RepairPacket };
 
-export class ApexSession {
+export class ApexBrowseSession {
   #browser?: Browser;
   #page?: Page;
   #revision = 0;

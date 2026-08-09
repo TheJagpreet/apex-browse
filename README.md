@@ -2,7 +2,7 @@
 
 Deterministic Playwright execution with bounded LLM repair.
 
-An agent sends one strict JSON DSL program to `apex_run`. Apex owns the Playwright page and resolves browser actions locally. On the normal path there is no model-in-the-loop browser conversation. Only an unresolved target returns a compact repair packet; the host can repair that one target through `apex_repair`.
+An agent sends one strict JSON DSL program to `apex_browse_run`. Apex Browse owns the Playwright page and resolves browser actions locally. On the normal path there is no model-in-the-loop browser conversation. Only an unresolved target returns a compact repair packet; the host can repair that one target through `apex_browse_repair`.
 
 ```powershell
 npm install
@@ -31,24 +31,24 @@ codex mcp add apex-browse -- node "$repositoryRoot\dist\mcp-server.js"
 }
 ```
 
-Send the complete JSON to `apex_run` as `programJson`.
+Send the complete JSON to `apex_browse_run` as `programJson`.
 
-- **Success:** Apex returns status, local action count, repair count, duration, and compact evidence IDs. Detailed evidence remains local and is fetched only on demand.
-- **Missing target:** Apex pauses and returns one `RepairPacket` containing the failed intent and at most five semantic candidates.
-- **Ambiguous target:** Apex does not click anything. The host must disambiguate or ask the user.
+- **Success:** Apex Browse returns status, local action count, repair count, duration, and compact evidence IDs. Detailed evidence remains local and is fetched only on demand.
+- **Missing target:** Apex Browse pauses and returns one `RepairPacket` containing the failed intent and at most five semantic candidates.
+- **Ambiguous target:** Apex Browse does not click anything. The host must disambiguate or ask the user.
 
-For a rename from `Send` to `Sent`, a host passes the returned `runId` and `{ "role": "button", "name": "Sent" }` to `apex_repair`. The replacement must be one of the packet’s bounded candidates; the paused step is replaced and no new DSL actions can be added through repair.
+For a rename from `Send` to `Sent`, a host passes the returned `runId` and `{ "role": "button", "name": "Sent" }` to `apex_browse_repair`. The replacement must be one of the packet’s bounded candidates; the paused step is replaced and no new DSL actions can be added through repair.
 
 ## MCP tools
 
 | Tool | Use |
 | --- | --- |
-| `apex_navigate` | Open a URL and return a bounded private semantic snapshot. |
-| `apex_run` | Run one complete allow-listed DSL program locally. |
-| `apex_snapshot` | Retrieve capped visible text and controls only when discovery is necessary. |
-| `apex_search` | Search the local semantic index without a full page dump. |
-| `apex_repair` | Apply one validated target replacement to a paused action. |
-| `apex_evidence` | Retrieve local execution evidence by ID for debugging. |
+| `apex_browse_navigate` | Open a URL and return a bounded private semantic snapshot. |
+| `apex_browse_run` | Run one complete allow-listed DSL program locally. |
+| `apex_browse_snapshot` | Retrieve capped visible text and controls only when discovery is necessary. |
+| `apex_browse_search` | Search the local semantic index without a full page dump. |
+| `apex_browse_repair` | Apply one validated target replacement to a paused action. |
+| `apex_browse_evidence` | Retrieve local execution evidence by ID for debugging. |
 
 The agent prompts for this loop are in [skills/planner.md](skills/planner.md) and [skills/repair.md](skills/repair.md). The first plans a complete program; the second sees only the bounded repair packet.
 
@@ -57,7 +57,7 @@ The agent prompts for this loop are in [skills/planner.md](skills/planner.md) an
 - The DSL has no arbitrary JavaScript, locator expressions, shell commands, or page evaluation.
 - Page data is marked untrusted.
 - Exact accessible role/name resolution happens first; aliases are explicit and auditable.
-- Multiple matching mutating controls return `ambiguous`; Apex does not guess.
+- Multiple matching mutating controls return `ambiguous`; Apex Browse does not guess.
 - High-impact targets such as delete/payment actions require `confirm: true` **and** an out-of-band `approveHighImpact` callback supplied by the host application. The MCP agent cannot approve its own high-impact action.
 
 The full design is in [research/apex-browse-plan.md](research/apex-browse-plan.md).

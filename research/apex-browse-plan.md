@@ -8,7 +8,7 @@ The target is not a flow-maintenance tool and not another autonomous browser age
 
 The core rule is:
 
-> The model writes intent once. Apex executes as much as possible locally. When an action cannot be resolved, Apex returns the smallest useful browser delta for one repair attempt.
+> The model writes intent once. Apex Browse executes as much as possible locally. When an action cannot be resolved, Apex Browse returns the smallest useful browser delta for one repair attempt.
 
 ## Concrete example
 
@@ -28,11 +28,11 @@ An agent receives: “Submit this data by clicking the Send button.” It produc
     text: Message sent
 ```
 
-Apex executes it with Playwright.
+Apex Browse executes it with Playwright.
 
 1. It resolves `Email`, `Message`, and `Send` locally using accessibility semantics and session-local page state.
 2. It clicks the button and checks the postcondition locally.
-3. If the page changed `Send` to `Sent`, Apex first tries deterministic normalization and configured aliases.
+3. If the page changed `Send` to `Sent`, Apex Browse first tries deterministic normalization and configured aliases.
 4. If that still does not yield one safe target, it returns a compact repair packet such as:
 
 ```json
@@ -47,9 +47,9 @@ Apex executes it with Playwright.
 }
 ```
 
-The LLM sees this small packet—not a full browser snapshot—and returns a one-step patch such as `click button "Sent"`. Apex validates and retries only that step.
+The LLM sees this small packet—not a full browser snapshot—and returns a one-step patch such as `click button "Sent"`. Apex Browse validates and retries only that step.
 
-If there are two matching buttons, the result is `ambiguous`; Apex does not guess or mutate the page.
+If there are two matching buttons, the result is `ambiguous`; Apex Browse does not guess or mutate the page.
 
 ## Execution model
 
@@ -57,7 +57,7 @@ If there are two matching buttons, the result is `ambiguous`; Apex does not gues
 Agent / skill creates DSL
         |
         v
-  Apex DSL validator
+  Apex Browse DSL validator
         |
         v
   Local Playwright executor
@@ -82,7 +82,7 @@ Agent / skill creates DSL
         +-- failed postcondition → compact failure receipt
 ```
 
-The executor, not the LLM, owns browser state. The LLM never receives unrestricted page content by default and never sends arbitrary JavaScript to the page. A failed postcondition is not repairable by changing the assertion: Apex reports it as a failure so the host can decide whether a new user-approved program is appropriate.
+The executor, not the LLM, owns browser state. The LLM never receives unrestricted page content by default and never sends arbitrary JavaScript to the page. A failed postcondition is not repairable by changing the assertion: Apex Browse reports it as a failure so the host can decide whether a new user-approved program is appropriate.
 
 ## DSL
 
@@ -105,7 +105,7 @@ Targets should use accessibility roles and names first. A target may have a loca
 
 ## Local resolver and snapshot index
 
-For each page revision, Apex keeps a private semantic index:
+For each page revision, Apex Browse keeps a private semantic index:
 
 - interactive controls: role, accessible name, enabled/checked state, and stable local ID;
 - visible text chunks, capped and indexed locally;
@@ -128,24 +128,24 @@ The MCP server should expose a small session-oriented API:
 
 | Tool | Purpose |
 | --- | --- |
-| `apex_navigate` | Open a URL and create a private page revision. |
-| `apex_run` | Validate and execute a complete DSL program locally. |
-| `apex_snapshot` | Return a bounded semantic snapshot only when requested. |
-| `apex_search` | Search the private snapshot index and return bounded candidates. |
-| `apex_repair` | Validate and apply one repair to a paused DSL step. |
-| `apex_evidence` | Retrieve locally retained evidence by ID when debugging is required. |
+| `apex_browse_navigate` | Open a URL and create a private page revision. |
+| `apex_browse_run` | Validate and execute a complete DSL program locally. |
+| `apex_browse_snapshot` | Return a bounded semantic snapshot only when requested. |
+| `apex_browse_search` | Search the private snapshot index and return bounded candidates. |
+| `apex_browse_repair` | Validate and apply one repair to a paused DSL step. |
+| `apex_browse_evidence` | Retrieve locally retained evidence by ID when debugging is required. |
 
-`apex_run` is the hot path. A successful multi-step program should normally require one MCP call after the initial plan. `apex_snapshot` and `apex_search` are discovery/repair tools, not a mandatory observe loop.
+`apex_browse_run` is the hot path. A successful multi-step program should normally require one MCP call after the initial plan. `apex_browse_snapshot` and `apex_browse_search` are discovery/repair tools, not a mandatory observe loop.
 
 ## Agents, subagents, and skills
 
 - **Host agent:** owns the user goal and decides whether to create a DSL program, request a repair, or ask the user.
-- **Browser executor:** a single Apex session owns a page. Subagents never concurrently mutate the same session.
+- **Browser executor:** a single Apex Browse session owns a page. Subagents never concurrently mutate the same session.
 - **Planner skill:** turns a user request into DSL plus explicit assertions.
 - **Repair skill:** receives only a repair packet and can return a constrained one-step patch.
 - **Domain skills:** may provide approved target aliases, data-entry conventions, or reusable DSL templates for a known application.
 
-Subagents are useful for planning or interpreting a compact repair packet. They should not each receive full snapshots or independently drive a browser; that recreates the token and coordination cost Apex is intended to remove.
+Subagents are useful for planning or interpreting a compact repair packet. They should not each receive full snapshots or independently drive a browser; that recreates the token and coordination cost Apex Browse is intended to remove.
 
 ## Safety model
 
@@ -174,21 +174,21 @@ The important comparison is not only a known flow. It includes exact success, a 
 ### Phase 1 — executor core
 
 1. Define the DSL schema and receipt schema.
-2. Implement `apex_navigate` and `apex_run` over one Playwright page.
+2. Implement `apex_browse_navigate` and `apex_browse_run` over one Playwright page.
 3. Implement exact role/name resolution, private page revisions, and postcondition waits.
 4. Return compact success, missing, ambiguous, and failed receipts.
 
 ### Phase 2 — compact discovery and repair
 
-1. Build the bounded snapshot index and `apex_search`.
-2. Define repair packets and `apex_repair` validation.
+1. Build the bounded snapshot index and `apex_browse_search`.
+2. Define repair packets and `apex_browse_repair` validation.
 3. Add deterministic normalization and auditable aliases.
 4. Add a planner/repair skill prompt contract.
 
 ### Phase 3 — agent integration
 
 1. Connect the MCP server to Codex/other agents.
-2. Add a sample host-agent loop: plan once → `apex_run` → repair only on a bounded failure.
+2. Add a sample host-agent loop: plan once → `apex_browse_run` → repair only on a bounded failure.
 3. Add per-session token, tool-call, and timing receipts.
 
 ### Phase 4 — evaluation and hardening
@@ -199,4 +199,4 @@ The important comparison is not only a known flow. It includes exact success, a 
 
 ## First implementation milestone
 
-Build a working MCP demo where an agent sends the YAML/JSON DSL once, Apex fills a form and clicks `Send` without any intermediate model call, and then recovers from the page changing that label to `Sent` by returning one compact repair packet. This is the smallest end-to-end proof of the actual product.
+Build a working MCP demo where an agent sends the YAML/JSON DSL once, Apex Browse fills a form and clicks `Send` without any intermediate model call, and then recovers from the page changing that label to `Sent` by returning one compact repair packet. This is the smallest end-to-end proof of the actual product.

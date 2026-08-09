@@ -1,9 +1,9 @@
 import { readFile, writeFile, readdir } from 'node:fs/promises';
 import { dirname, join, relative, resolve } from 'node:path';
 
-type Arm = 'apex' | 'playwright-mcp' | 'native';
+type Arm = 'apex-browse' | 'playwright-mcp' | 'native';
 type Usage = { input_tokens: number; cached_input_tokens: number; cache_write_input_tokens: number; output_tokens: number; reasoning_output_tokens: number };
-type Trial = { type?: string; sequence: number; trial: number; workload: string; arm: Arm; durationMs: number; success: boolean; oracleMatched: boolean; timedOut: boolean; exitCode: number | null; toolCalls: number; toolNames: string[]; toolErrors: number; mcpResultBytes: number; agentFinal: string | null; error: string | null; usage: Usage; usageAvailable?: boolean; apexReportedDurationMs?: number | null };
+type Trial = { type?: string; sequence: number; trial: number; workload: string; arm: Arm; durationMs: number; success: boolean; oracleMatched: boolean; timedOut: boolean; exitCode: number | null; toolCalls: number; toolNames: string[]; toolErrors: number; mcpResultBytes: number; agentFinal: string | null; error: string | null; usage: Usage; usageAvailable?: boolean; apexBrowseReportedDurationMs?: number | null };
 type Distribution = { n: number; mean: number; stddev: number; p50: number; p95: number; min: number; max: number };
 
 const round = (value: number, digits = 2) => Number(value.toFixed(digits));
@@ -50,7 +50,7 @@ if (!metadata || !trials.length) throw new Error('Raw results must contain metad
 function summarize(rows: Trial[]) {
   const successful = rows.filter(row => row.success);
   const measuredUsage = rows.filter(row => row.usageAvailable !== false);
-  const reportedLocal = rows.map(row => row.apexReportedDurationMs).filter((value): value is number => typeof value === 'number');
+  const reportedLocal = rows.map(row => row.apexBrowseReportedDurationMs).filter((value): value is number => typeof value === 'number');
   return {
     attempts: rows.length, successes: successful.length, successRate: round(successful.length / rows.length * 100), oracleMatches: rows.filter(row => row.oracleMatched).length,
     totalAttemptTimeMs: round(rows.reduce((sum, row) => sum + row.durationMs, 0)),
@@ -58,7 +58,7 @@ function summarize(rows: Trial[]) {
     tokenMeasurementsAvailable: measuredUsage.length, totalTokensConsumed: measuredUsage.reduce((sum, row) => sum + totalTokens(row), 0), totalTokens: distribution(measuredUsage.map(totalTokens)), inputTokens: distribution(measuredUsage.map(row => row.usage.input_tokens)),
     outputTokens: distribution(measuredUsage.map(row => row.usage.output_tokens)), toolCalls: distribution(rows.map(row => row.toolCalls)),
     totalToolCalls: rows.reduce((sum, row) => sum + row.toolCalls, 0), totalMcpResultBytes: rows.reduce((sum, row) => sum + row.mcpResultBytes, 0),
-    mcpResultBytes: distribution(rows.map(row => row.mcpResultBytes)), apexReportedLocalDurationMs: distribution(reportedLocal), estimatedCostUsd: round(measuredUsage.reduce((sum, row) => sum + estimatedUsd(row), 0), 6),
+    mcpResultBytes: distribution(rows.map(row => row.mcpResultBytes)), apexBrowseReportedLocalDurationMs: distribution(reportedLocal), estimatedCostUsd: round(measuredUsage.reduce((sum, row) => sum + estimatedUsd(row), 0), 6),
     toolErrors: rows.reduce((sum, row) => sum + row.toolErrors, 0),
   };
 }
@@ -68,19 +68,19 @@ const workloadIds = [...new Set(trials.map(row => row.workload))];
 const byArm = Object.fromEntries(arms.map(arm => [arm, summarize(trials.filter(row => row.arm === arm))]));
 const byWorkload = Object.fromEntries(workloadIds.map(workload => [workload, Object.fromEntries(arms.map(arm => [arm, summarize(trials.filter(row => row.workload === workload && row.arm === arm))]))]));
 
-const pairs: Array<{ apex: Trial; official: Trial }> = [];
-for (const apex of trials.filter(row => row.arm === 'apex')) {
-  const official = trials.find(row => row.arm === 'playwright-mcp' && row.workload === apex.workload && row.trial === apex.trial);
-  if (official?.success && apex.success) pairs.push({ apex, official });
+const pairs: Array<{ apexBrowse: Trial; official: Trial }> = [];
+for (const apexBrowse of trials.filter(row => row.arm === 'apex-browse')) {
+  const official = trials.find(row => row.arm === 'playwright-mcp' && row.workload === apexBrowse.workload && row.trial === apexBrowse.trial);
+  if (official?.success && apexBrowse.success) pairs.push({ apexBrowse, official });
 }
-const durationDifferences = pairs.map(pair => pair.official.durationMs - pair.apex.durationMs);
-const tokenDifferences = pairs.map(pair => totalTokens(pair.official) - totalTokens(pair.apex));
+const durationDifferences = pairs.map(pair => pair.official.durationMs - pair.apexBrowse.durationMs);
+const tokenDifferences = pairs.map(pair => totalTokens(pair.official) - totalTokens(pair.apexBrowse));
 const paired = {
   jointlySuccessfulPairs: pairs.length,
-  durationMsOfficialMinusApex: { distribution: distribution(durationDifferences), bootstrapMean95Ci: bootstrapMeanCi(durationDifferences) },
-  totalTokensOfficialMinusApex: { distribution: distribution(tokenDifferences), bootstrapMean95Ci: bootstrapMeanCi(tokenDifferences) },
-  medianDurationSpeedupOfficialOverApex: round(percentile(pairs.map(pair => pair.official.durationMs / pair.apex.durationMs), .5), 3),
-  medianTokenRatioOfficialOverApex: round(percentile(pairs.map(pair => totalTokens(pair.official) / Math.max(1, totalTokens(pair.apex))), .5), 3),
+  durationMsOfficialMinusApexBrowse: { distribution: distribution(durationDifferences), bootstrapMean95Ci: bootstrapMeanCi(durationDifferences) },
+  totalTokensOfficialMinusApexBrowse: { distribution: distribution(tokenDifferences), bootstrapMean95Ci: bootstrapMeanCi(tokenDifferences) },
+  medianDurationSpeedupOfficialOverApexBrowse: round(percentile(pairs.map(pair => pair.official.durationMs / pair.apexBrowse.durationMs), .5), 3),
+  medianTokenRatioOfficialOverApexBrowse: round(percentile(pairs.map(pair => totalTokens(pair.official) / Math.max(1, totalTokens(pair.apexBrowse))), .5), 3),
 };
 const failures = trials.filter(row => !row.success).map(row => ({
   sequence: row.sequence, trial: row.trial, workload: row.workload, arm: row.arm,
@@ -100,8 +100,8 @@ const workloadRows = workloadIds.flatMap(workload => arms.map(arm => {
   const item = byWorkload[workload][arm];
   return `| ${workload} | ${arm} | ${item.successes}/${item.attempts} | ${item.durationMsSuccessful.p50} | ${item.totalTokens.p50} | ${item.toolCalls.p50} |`;
 })).join('\n');
-const apex = byArm.apex; const official = byArm['playwright-mcp'];
-const reduction = (apexValue: number, officialValue: number) => round((1 - apexValue / officialValue) * 100, 1);
+const apexBrowse = byArm['apex-browse']; const official = byArm['playwright-mcp'];
+const reduction = (apexBrowseValue: number, officialValue: number) => round((1 - apexBrowseValue / officialValue) * 100, 1);
 const failureRows = failures.length ? failures.map(failure => `| ${failure.sequence} | ${failure.arm} | ${failure.workload} | ${failure.trial} | ${failure.classification} | ${failure.durationMs} | ${failure.toolCalls} | ${failure.totalTokens} |`).join('\n') : '| — | — | — | — | none | — | — | — |';
 const failureNarrative = failures.length === 1 && failures[0].classification === 'agent_declined_without_tool'
   ? 'The only failure was retained in aggregate statistics. Its transcript shows the agent replied `FAILED` without invoking an MCP tool; it was not a browser-runtime or oracle error.'
@@ -112,7 +112,7 @@ Generated ${summary.generatedAt} from \`${portableSource}\`.
 
 ## Aggregate results
 
-Across equal 50-attempt arms, Apex used ${reduction(apex.totalAttemptTimeMs, official.totalAttemptTimeMs)}% less summed wall time, ${reduction(apex.totalTokensConsumed, official.totalTokensConsumed)}% fewer total tokens, ${reduction(apex.totalToolCalls, official.totalToolCalls)}% fewer MCP calls, and ${reduction(apex.totalMcpResultBytes, official.totalMcpResultBytes)}% fewer serialized MCP-result bytes than official Playwright MCP. Its estimated model cost was ${reduction(apex.estimatedCostUsd, official.estimatedCostUsd)}% lower. Apex succeeded on ${apex.successes}/${apex.attempts} attempts versus ${official.successes}/${official.attempts} for official MCP.
+Across equal 50-attempt arms, Apex Browse used ${reduction(apexBrowse.totalAttemptTimeMs, official.totalAttemptTimeMs)}% less summed wall time, ${reduction(apexBrowse.totalTokensConsumed, official.totalTokensConsumed)}% fewer total tokens, ${reduction(apexBrowse.totalToolCalls, official.totalToolCalls)}% fewer MCP calls, and ${reduction(apexBrowse.totalMcpResultBytes, official.totalMcpResultBytes)}% fewer serialized MCP-result bytes than official Playwright MCP. Its estimated model cost was ${reduction(apexBrowse.estimatedCostUsd, official.estimatedCostUsd)}% lower. Apex Browse succeeded on ${apexBrowse.successes}/${apexBrowse.attempts} attempts versus ${official.successes}/${official.attempts} for official MCP.
 
 | Arm | Independent success | Total wall time (min) | Median successful time (ms) | p95 successful time (ms) | Total tokens | Median tokens | Median calls | Median result bytes | Tool errors | Estimated model cost |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -120,7 +120,7 @@ ${armRows}
 
 Native Playwright is a deterministic lower-bound context, not an agent competitor. Agent success is counted only when the independent server-side oracle observed the exact required payload.
 
-Apex's median reported local DSL execution time was ${apex.apexReportedLocalDurationMs.p50} ms. The gap between that and end-to-end time is model, Codex, MCP, and browser-process orchestration included by design.
+Apex Browse's median reported local DSL execution time was ${apexBrowse.apexBrowseReportedLocalDurationMs.p50} ms. The gap between that and end-to-end time is model, Codex, MCP, and browser-process orchestration included by design.
 
 ## Results by workload
 
@@ -130,7 +130,7 @@ ${workloadRows}
 
 ## Paired comparison
 
-There were ${paired.jointlySuccessfulPairs} workload/trial pairs where both agent arms succeeded. Official Playwright MCP minus Apex Browse had a mean duration difference of ${paired.durationMsOfficialMinusApex.distribution.mean} ms (deterministic bootstrap 95% CI ${paired.durationMsOfficialMinusApex.bootstrapMean95Ci[0]} to ${paired.durationMsOfficialMinusApex.bootstrapMean95Ci[1]} ms) and a mean token difference of ${paired.totalTokensOfficialMinusApex.distribution.mean} tokens (95% CI ${paired.totalTokensOfficialMinusApex.bootstrapMean95Ci[0]} to ${paired.totalTokensOfficialMinusApex.bootstrapMean95Ci[1]}). The median official/Apex ratios were ${paired.medianDurationSpeedupOfficialOverApex}× for elapsed time and ${paired.medianTokenRatioOfficialOverApex}× for total tokens. Positive differences favor Apex.
+There were ${paired.jointlySuccessfulPairs} workload/trial pairs where both agent arms succeeded. Official Playwright MCP minus Apex Browse had a mean duration difference of ${paired.durationMsOfficialMinusApexBrowse.distribution.mean} ms (deterministic bootstrap 95% CI ${paired.durationMsOfficialMinusApexBrowse.bootstrapMean95Ci[0]} to ${paired.durationMsOfficialMinusApexBrowse.bootstrapMean95Ci[1]} ms) and a mean token difference of ${paired.totalTokensOfficialMinusApexBrowse.distribution.mean} tokens (95% CI ${paired.totalTokensOfficialMinusApexBrowse.bootstrapMean95Ci[0]} to ${paired.totalTokensOfficialMinusApexBrowse.bootstrapMean95Ci[1]}). The median official/Apex Browse ratios were ${paired.medianDurationSpeedupOfficialOverApexBrowse}× for elapsed time and ${paired.medianTokenRatioOfficialOverApexBrowse}× for total tokens. Positive differences favor Apex Browse.
 
 ## Failure inventory
 

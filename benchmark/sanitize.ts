@@ -28,7 +28,7 @@ for (const record of records) {
   delete record.environment;
   delete record.git;
   record.runtime = node ? { node } : undefined;
-  record.apexMcpCommand = 'node dist/mcp-server.js';
+  record.apexBrowseMcpCommand = 'node dist/mcp-server.js';
   record.machineDetailsRedacted = true;
 }
 await writeFile(rawPath, `${records.map(record => JSON.stringify(sanitizeValue(record))).join('\n')}\n`);

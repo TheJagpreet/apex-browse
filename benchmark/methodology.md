@@ -7,7 +7,7 @@ For common browser tasks, does Apex Browse reduce end-to-end elapsed time, model
 ## Frozen comparison
 
 - Agent: Codex CLI with `gpt-5.6-luna`, low reasoning effort, ephemeral thread, and user configuration disabled.
-- Apex arm: this repository's compiled stdio MCP server.
+- Apex Browse arm: this repository's compiled stdio MCP server.
 - Official arm: `@playwright/mcp@0.0.79`, headless isolated Chromium, image responses omitted, default full semantic snapshots.
 - Native context arm: direct Playwright with fixed locators. It provides a non-agent lower bound and is not presented as an agent competitor.
 - Every agent receives the same task wording and prohibition on shell, filesystem, web-search, and non-browser tools.
@@ -28,7 +28,7 @@ Before publication, `benchmark:sanitize` removes hardware, operating-system, tim
 
 ## Analysis
 
-The analyzer reports success rate, mean, sample standard deviation, median, and p95. Successful-duration statistics and all-attempt statistics are both preserved. Apex and official trials are paired by workload and repetition; paired mean differences receive a deterministic 10,000-resample bootstrap 95% confidence interval. Positive official-minus-Apex differences favor Apex.
+The analyzer reports success rate, mean, sample standard deviation, median, and p95. Successful-duration statistics and all-attempt statistics are both preserved. Apex Browse and official trials are paired by workload and repetition; paired mean differences receive a deterministic 10,000-resample bootstrap 95% confidence interval. Positive official-minus-Apex Browse differences favor Apex Browse.
 
 The model cost estimate uses [OpenAI's published Luna prices](https://developers.openai.com/api/docs/models/gpt-5.6-luna) current at protocol creation: $1.00 per million uncached input tokens, $0.10 per million cached input tokens, $1.25 per million cache-write input tokens, and $6.00 per million output tokens. The estimate assumes no individual request crosses the documented long-context threshold. Raw counters are retained so estimates can be recalculated after pricing changes.
 
@@ -66,4 +66,4 @@ npm.cmd run benchmark:run -- --trials 1 --workloads profile,renamed-control
 
 ## Validity limits
 
-The controlled site makes correctness independently observable and removes internet variability, but it does not represent every production site. Results are model-, runtime-version-, and task-dependent. The benchmark measures total agent workflow cost rather than isolated locator execution. Omitting screenshots favors semantic interaction in both MCP arms and avoids comparing vision-token behavior that Apex does not currently offer. Hardware, operating-system, timezone, user-directory, and absolute repository-path metadata are deliberately excluded from publishable artifacts.
+The controlled site makes correctness independently observable and removes internet variability, but it does not represent every production site. Results are model-, runtime-version-, and task-dependent. The benchmark measures total agent workflow cost rather than isolated locator execution. Omitting screenshots favors semantic interaction in both MCP arms and avoids comparing vision-token behavior that Apex Browse does not currently offer. Hardware, operating-system, timezone, user-directory, and absolute repository-path metadata are deliberately excluded from publishable artifacts.

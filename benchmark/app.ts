@@ -79,6 +79,6 @@ export async function startBenchmarkServer(port = 0): Promise<BenchmarkServer> {
 }
 
 if (process.argv[1] && import.meta.url === new URL(`file:///${process.argv[1].replaceAll('\\', '/')}`).href) {
-  const app = await startBenchmarkServer(Number(process.env.APEX_BENCHMARK_PORT ?? 4173));
+  const app = await startBenchmarkServer(Number(process.env.APEX_BROWSE_BENCHMARK_PORT ?? 4173));
   process.stdout.write(`${app.baseUrl}\n`);
 }

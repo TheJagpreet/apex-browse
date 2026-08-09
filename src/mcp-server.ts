@@ -1,5 +1,5 @@
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { createApexMcpServer } from './mcp.js';
+import { createApexBrowseMcpServer } from './mcp.js';
 
-const server = createApexMcpServer();
+const server = createApexBrowseMcpServer();
 await server.connect(new StdioServerTransport());

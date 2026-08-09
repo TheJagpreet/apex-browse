@@ -1,7 +1,7 @@
 import { readFile, readdir } from 'node:fs/promises';
 import { basename, dirname, join, resolve } from 'node:path';
 
-type Arm = 'apex' | 'playwright-mcp' | 'native';
+type Arm = 'apex-browse' | 'playwright-mcp' | 'native';
 type Trial = {
   sequence: number; trial: number; workload: string; arm: Arm; orderPosition: number; durationMs: number;
   success: boolean; oracleMatched: boolean; timedOut: boolean; exitCode: number | null; expected: unknown; observed: unknown;
@@ -36,7 +36,7 @@ assertSanitized(await readFile(inputPath, 'utf8'), 'raw results');
 
 const keys = new Set<string>();
 const sequences = new Set<number>();
-const baseOrder: Arm[] = ['apex', 'playwright-mcp', 'native'];
+const baseOrder: Arm[] = ['apex-browse', 'playwright-mcp', 'native'];
 for (const row of trials) {
   const key = `${row.trial}:${row.workload}:${row.arm}`;
   assert(!keys.has(key), `duplicate trial key ${key}`); keys.add(key);
@@ -71,7 +71,7 @@ for (const row of agentTrials) {
 }
 
 const summary = JSON.parse(await readFile(join(dirname(inputPath), 'summary.json'), 'utf8'));
-assert(summary.byArm.apex.attempts === 50 && summary.byArm['playwright-mcp'].attempts === 50 && summary.byArm.native.attempts === 50, 'summary arm counts are incomplete');
+assert(summary.byArm['apex-browse'].attempts === 50 && summary.byArm['playwright-mcp'].attempts === 50 && summary.byArm.native.attempts === 50, 'summary arm counts are incomplete');
 assert(summary.failures.length === trials.filter(row => !row.success).length, 'summary failure count differs from raw data');
 assert(!/^[A-Za-z]:[\\/]/.test(summary.source), 'summary source path is absolute');
 assertSanitized(JSON.stringify(summary), 'summary');
